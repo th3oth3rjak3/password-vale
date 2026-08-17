@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"fmt"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -125,14 +127,47 @@ func newVaultContent(entries []domain.PasswordEntry) fyne.CanvasObject {
 }
 
 func newPasswordEntryItem(entry domain.PasswordEntry) fyne.CanvasObject {
-	name := widget.NewLabel(entry.Name)
-	username := widget.NewLabel(entry.Username)
+	favoriteIcon := widget.NewLabel("")
+
+	if entry.Favorite {
+		favoriteIcon.SetText("★")
+	}
+
+	favorite := container.NewGridWrap(
+		fyne.NewSize(24, 48),
+		favoriteIcon,
+	)
+
+	info := container.NewVBox(
+		widget.NewLabel(entry.Name),
+		widget.NewLabel(entry.Username),
+	)
+
+	tags := container.NewCenter(
+		newTagSummary(entry.Tags),
+	)
 
 	return container.NewBorder(
 		nil,
 		nil,
-		name,
-		nil,
-		username,
+		favorite,
+		tags,
+		info,
 	)
+}
+
+func newTagSummary(tags []string) fyne.CanvasObject {
+	tagWidgets := container.NewHBox()
+
+	count := min(len(tags), 2)
+
+	for _, tag := range tags[:count] {
+		tagWidgets.Add(newTagWidget(tag))
+	}
+
+	if len(tags) > 2 {
+		tagWidgets.Add(widget.NewLabel(fmt.Sprintf("+%d", len(tags)-2)))
+	}
+
+	return tagWidgets
 }
