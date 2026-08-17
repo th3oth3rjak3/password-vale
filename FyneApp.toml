@@ -1,0 +1,7 @@
+[Details]
+Icon = "Icon.png"
+Name = "Password Vale"
+ID = "com.th3oth3rjak3.password-vale"
+
+[Migrations]
+fyneDo = true
